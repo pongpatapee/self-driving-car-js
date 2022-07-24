@@ -6,6 +6,7 @@ class Sensor {
         this.raySpread = Math.PI / 2;
 
         this.rays = [];
+        this.readings = [];
     }
 
     #castRays() {
@@ -26,17 +27,66 @@ class Sensor {
 
     }
 
-    update() {
+    update(roadBorders) {
         this.#castRays();
+        this.readings = [];
+        for(let i = 0; i < this.rays.length; i++) {
+            this.readings.push(this.#getReadings(this.rays[i], roadBorders));
+        }
+    }
+
+    #getReadings(ray, roadBorders) {
+        const touches = [];
+        for(let i = 0; i < roadBorders.length; i++) {
+            const touch = getIntersection(
+                ray[0],
+                ray[1],
+                roadBorders[i][0],
+                roadBorders[i][1],
+            );
+
+            if(touch) {
+                touches.push(touch);
+            }
+        }  
+
+        if (touches.length == 0) {
+            return null;
+        }
+
+        //if there is an intersection return the one that's closest
+        const offset = touches.map(e => e.offset);
+        const minOffset = Math.min(...offset);
+        return touches.find(e => e.offset == minOffset);
     }
 
     draw(ctx) {
+        //drawing yellow segments
         ctx.lineWidth = 2;
         ctx.strokeStyle = 'yellow';
         for(let i = 0; i < this.rayCount; i++) {
+            let intersection = this.rays[i][1];
+            if(this.readings[i]) {
+                intersection = this.readings[i];
+            }
             ctx.beginPath();
             ctx.moveTo(this.rays[i][0].x, this.rays[i][0].y);
-            ctx.lineTo(this.rays[i][1].x, this.rays[i][1].y);
+            // ctx.lineTo(this.rays[i][1].x, this.rays[i][1].y);
+            ctx.lineTo(intersection.x, intersection.y);
+            ctx.stroke();
+        }
+
+        // where the segment would have continued
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'black';
+        for(let i = 0; i < this.rayCount; i++) {
+            let intersection = this.rays[i][1];
+            if(this.readings[i]) {
+                intersection = this.readings[i];
+            }
+            ctx.beginPath();
+            ctx.moveTo(this.rays[i][1].x, this.rays[i][1].y);
+            ctx.lineTo(intersection.x, intersection.y);
             ctx.stroke();
         }
     }

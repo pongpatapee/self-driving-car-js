@@ -32,6 +32,12 @@ class Car {
         this.sensor.draw(ctx);
     }
 
+    update(roadBorders) {
+        this.#move();
+        this.polygon = this.#createPolygon();
+        this.sensor.update(roadBorders);
+    }
+
     #move() {
 
         if (this.controls.forward) {
@@ -67,10 +73,5 @@ class Car {
         }
         this.x -= Math.sin(this.angle) * this.speed;
         this.y -= Math.cos(this.angle) * this.speed;
-    }
-
-    update() {
-        this.#move();
-        this.sensor.update();
     }
 }

@@ -22,7 +22,7 @@ class Car {
         this.controls = new Controls(controleType);
     }
 
-    draw(ctx, color) {
+    draw(ctx, color, drawSensors=false) {
         if(this.damage) {
             ctx.fillStyle = 'red';
         } else {
@@ -35,7 +35,7 @@ class Car {
         }
         ctx.fill();
         
-        if(this.sensor) {
+        if(this.sensor && drawSensors) {
             this.sensor.draw(ctx);
         }
     }

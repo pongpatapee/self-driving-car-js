@@ -6,6 +6,11 @@ body {
     text-align: center;
 }
 
-#myCanvas {
+#carCanvas {
     background: lightgrey;
+}
+
+#networkCanvas {
+    background: black;
+
 }

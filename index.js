@@ -17,7 +17,12 @@ const cars = getCars(N);
 const traffic = [
     new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2),
 ];
+
 animate();
+
+function getBestCar(cars) {
+    return cars.find(c => c.y == Math.min(...cars.map(c => c.y)));
+}
 
 function getCars(N) {
     const cars = [];
@@ -37,12 +42,14 @@ function animate(time) {
         car.update(road.borders, traffic);
     }
 
+    const bestCar = getBestCar(cars);
+
     //this line refreshes the frame as well as setting the height
     carCanvas.height = window.innerHeight;
     networkCanvas.height = window.innerHeight;
 
     carCtx.save();
-    carCtx.translate(0, -cars[0].y + carCanvas.height * 0.7);
+    carCtx.translate(0, -bestCar.y + carCanvas.height * 0.7);
     for(let i = 0; i < traffic.length; i++) {
         traffic[i].draw(carCtx, "gray");
     }
@@ -53,11 +60,11 @@ function animate(time) {
         car.draw(carCtx, "blue");
     }
     carCtx.globalAlpha = 1;
-    cars[0].draw(carCtx, "blue", true);
+    bestCar.draw(carCtx, "blue", true);
 
     carCtx.restore();
 
     networkCtx.lineDashOffset = -time / 50;
-    Visualizer.drawNetwork(networkCtx, cars[0].brain);
+    Visualizer.drawNetwork(networkCtx, bestCar.brain);
     requestAnimationFrame(animate);
 }

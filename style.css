@@ -3,7 +3,18 @@ body {
     padding: 0;
     background: darkgrey;
     overflow: hidden;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.verticalButtons {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    cursor: pointer;
 }
 
 #carCanvas {

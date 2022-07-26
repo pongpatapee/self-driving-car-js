@@ -24,6 +24,9 @@ if(localStorage.getItem("BestBrain")) {
     }
 }
 
+//load best brain from my own training
+loadBestBrain();
+
 const traffic = [
     new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2),
     new Car(road.getLaneCenter(0), -300, 30, 50, "DUMMY", 2),
@@ -42,6 +45,18 @@ function saveBrain() {
 
 function discardBrain() {
     localStorage.removeItem("BestBrain"); 
+}
+
+function loadBestBrain() {
+    fetch('BestBrain.json')
+        .then(res => res.json())
+        .then(json => {
+            cars[0].brain = json;
+        })
+    // const response = await fetch('BestBrain.json');
+    // const bestBrain = await response.json();
+    // console.log(bestBrain);
+    // return bestBrain;
 }
 
 function getBestCar(cars) {

@@ -11,14 +11,27 @@ const carCtx = carCanvas.getContext('2d');
 const networkCtx = networkCanvas.getContext('2d');
 
 const road = new Road(carCanvas.width/2, carCanvas.width * 0.9);
-// const car = new Car(road.getLaneCenter(1), 100, 30, 50, "AI");
+
 const N = 100;
 const cars = getCars(N);
+let bestCar = cars[0];
+if(localStorage.getItem("BestBrain")) {
+    bestCar.brain = JSON.parse(localStorage.getItem("BestBrain"));
+}
+
 const traffic = [
     new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2),
 ];
 
 animate();
+
+function saveBrain() {
+    localStorage.setItem("BestBrain", JSON.stringify(bestCar.brain));
+}
+
+function discardBrain() {
+    localStorage.removeItem("BestBrain"); 
+}
 
 function getBestCar(cars) {
     return cars.find(c => c.y == Math.min(...cars.map(c => c.y)));
@@ -42,7 +55,7 @@ function animate(time) {
         car.update(road.borders, traffic);
     }
 
-    const bestCar = getBestCar(cars);
+    bestCar = getBestCar(cars);
 
     //this line refreshes the frame as well as setting the height
     carCanvas.height = window.innerHeight;
